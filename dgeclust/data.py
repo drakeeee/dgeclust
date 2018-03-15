@@ -1,5 +1,7 @@
 from __future__ import division
 
+from builtins import zip
+from builtins import object
 import numpy as np
 import pandas as pd
 import collections as cl
@@ -18,9 +20,9 @@ class CountData(object):
         if len(groups) != len(counts.columns.tolist()):
             raise Exception("The list of groups is not the same length as the list of samples!")
 
-        labels = cl.OrderedDict.fromkeys(groups).keys()     # get unique elements, preserve order
+        labels = list(cl.OrderedDict.fromkeys(groups).keys())     # get unique elements, preserve order
         groups = [[col for col, group in zip(counts.columns, groups) if label == group] for label in labels]
-        groups = cl.OrderedDict(zip(labels, groups))
+        groups = cl.OrderedDict(list(zip(labels, groups)))
 
         ## compute library sizes
         # norm_method = {
@@ -32,8 +34,8 @@ class CountData(object):
         lib_sizes = pd.DataFrame(lib_sizes, index=counts.columns, columns=['sizes']).T
 
         ## compute number of replicas per group
-        nreplicas = [np.size(val) for val in groups.values()]
-        nreplicas = cl.OrderedDict(zip(groups.keys(), nreplicas))
+        nreplicas = [np.size(val) for val in list(groups.values())]
+        nreplicas = cl.OrderedDict(list(zip(list(groups.keys()), nreplicas)))
 
         ##
         self.counts = counts

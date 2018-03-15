@@ -1,5 +1,7 @@
 from __future__ import division
 
+from builtins import range
+from builtins import object
 import multiprocessing as mp
 import IPython.lib.backgroundjobs as bgjobs
 
@@ -21,8 +23,8 @@ class SimulationManager(object):
         pool = None if nthreads == 1 else mp.Pool(nthreads)
 
         ## reformat data
-        counts_norm = [data.counts_norm[samples].values for samples in data.groups.values()]
-        nreplicas = data.nreplicas.values()
+        counts_norm = [data.counts_norm[samples].values for samples in list(data.groups.values())]
+        nreplicas = list(data.nreplicas.values())
         data = counts_norm, nreplicas
 
         ## start new job

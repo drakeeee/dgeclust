@@ -1,5 +1,9 @@
 from __future__ import division
 
+from builtins import str
+from builtins import zip
+from builtins import map
+from builtins import object
 import os
 import pickle as pkl
 import itertools as it
@@ -227,12 +231,12 @@ class NBinomModel(object):
         # update group-specific variables
         counts_norm, _ = data
         common_args = it.repeat((self.log_phi, self.log_mu, self.beta, self.lw))
-        args = zip(self.c[1:], self.d[1:], self.lu[1:], self.zeta[1:], counts_norm[1:], common_args)
+        args = list(zip(self.c[1:], self.d[1:], self.lu[1:], self.zeta[1:], counts_norm[1:], common_args))
 
         if pool is None:
-            self.c[1:], self.d[1:], self.z[1:], self.lu[1:], self.zeta[1:] = zip(*map(_update_group_vars, args))
+            self.c[1:], self.d[1:], self.z[1:], self.lu[1:], self.zeta[1:] = list(zip(*list(map(_update_group_vars, args))))
         else:
-            self.c[1:], self.d[1:], self.z[1:], self.lu[1:], self.zeta[1:] = zip(*pool.map(_update_group_vars, args))
+            self.c[1:], self.d[1:], self.z[1:], self.lu[1:], self.zeta[1:] = list(zip(*pool.map(_update_group_vars, args)))
 
         # update occupancies
         self.occ[:] = np.bincount(self.z[1:].ravel(), minlength=self.lw.size)

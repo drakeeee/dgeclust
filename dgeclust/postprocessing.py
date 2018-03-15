@@ -1,5 +1,9 @@
 from __future__ import division
 
+from builtins import zip
+from builtins import map
+from builtins import str
+from builtins import range
 import os
 import itertools as it
 import multiprocessing as mp
@@ -35,7 +39,7 @@ def compare_groups(data, model, group1, group2, t0=5000, tend=10000, dt=1, nthre
 
     ## fetch feature names and groups
     gene_names = data.counts.index
-    groups = data.groups.keys()  # order is preserved here
+    groups = list(data.groups.keys())  # order is preserved here
 
     igroup1 = groups.index(group1)
     igroup2 = groups.index(group2)
@@ -53,9 +57,9 @@ def compare_groups(data, model, group1, group2, t0=5000, tend=10000, dt=1, nthre
     ## compute un-normalized values of posteriors
     chunk_size = int(nsamples / nthreads + 1)
     chunks = [samples[i:i+chunk_size] for i in range(0, nsamples, chunk_size)]
-    args = zip(chunks, it.repeat((indir, igroup1, igroup2)))
+    args = list(zip(chunks, it.repeat((indir, igroup1, igroup2))))
     if pool is None:
-        p = map(_compute_pvals, args)
+        p = list(map(_compute_pvals, args))
     else:
         p = pool.map(_compute_pvals, args)
 
@@ -118,9 +122,9 @@ def compute_similarity_vector(model, t0=5000, tend=10000, dt=1, inc=None, compar
     ## compute similarity matrices for each sample
     chunk_size = int(nsamples / nthreads + 1)
     chunks = [samples[i:i+chunk_size] for i in range(0, nsamples, chunk_size)]
-    args = zip(chunks, it.repeat((indir, inc, compare_genes)))
+    args = list(zip(chunks, it.repeat((indir, inc, compare_genes))))
     if pool is None:
-        vec = map(_compute_similarity_vector, args)
+        vec = list(map(_compute_similarity_vector, args))
     else:
         vec = pool.map(_compute_similarity_vector, args)
 

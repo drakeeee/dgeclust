@@ -2,6 +2,7 @@ from __future__ import division
 
 from builtins import range
 from builtins import object
+import logging
 import multiprocessing as mp
 import IPython.lib.backgroundjobs as bgjobs
 
@@ -44,5 +45,7 @@ def _run(data, model, niters, pool):
 
     ## loop
     for t in range(model.iter, model.iter+niters):
+        if t % 100:
+            logging.info('step: {}'.format(t))
         model.update(data, pool)                # update model state
         model.save()                            # save state
